@@ -1,6 +1,6 @@
 {
   "name": "hexo-generator-alias",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Alias generator for Hexo",
   "main": "index",
   "repository": {
@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/hexojs/hexo-generator-alias/issues"
   },
-  "keywords": ["hexo", "alias", "generator"],
+  "keywords": ["hexo", "alias", "generator", "redirect"],
   "author": "Tommy Chen <tommy351@gmail.com> (http://zespia.tw)",
   "license": {
     "type": "MIT",
