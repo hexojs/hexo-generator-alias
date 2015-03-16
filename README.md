@@ -1,6 +1,8 @@
 # Alias generator
 
-Generates alias pages for redirecting to posts, pages or URL.
+Generates alias pages for redirecting to posts, pages or URL. 
+
+**Note: this plugin is currently only compatible with Hexo version 2. A version compatible with version 3 is in the works.**
 
 ## Install
 
