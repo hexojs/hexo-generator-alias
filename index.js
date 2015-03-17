@@ -1,8 +1,9 @@
 var url = require('url');
 
-hexo.extend.generator.register(function(locals, render, callback){
+hexo.extend.generator.register('alias', function(locals){
   var route = hexo.route,
-    config = hexo.config;
+    config = hexo.config,
+    routes = [];
 
   var template = function(path){
     path = url.parse(path).protocol ? path : config.root + route.format(path);
@@ -27,15 +28,15 @@ hexo.extend.generator.register(function(locals, render, callback){
     if (!Array.isArray(aliases)) aliases = [aliases];
 
     aliases.forEach(function(alias){
-      route.set(alias, template(item.path));
+      routes.push({path:alias, data:template(item.path)});
     });
   });
 
   var aliasConfig = config.alias;
 
   for (var i in aliasConfig){
-    route.set(i, template(aliasConfig[i]));
+    routes.push({path:i, data:template(aliasConfig[i])});
   }
 
-  callback();
+  return routes;
 });
