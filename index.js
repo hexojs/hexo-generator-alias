@@ -7,6 +7,7 @@ hexo.extend.generator.register('alias', function(locals){
 
   var template = function(path){
     path = url.parse(path).protocol ? path : config.root + route.format(path);
+    path = path.replace(/index.html$/, "");
 
     return [
       '<!DOCTYPE html>',
