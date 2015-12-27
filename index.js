@@ -1,3 +1,4 @@
+/*
 var url = require('url');
 
 hexo.extend.generator.register('alias', function(locals){
@@ -40,4 +41,9 @@ hexo.extend.generator.register('alias', function(locals){
   }
 
   return routes;
-});
+});*/
+/* global hexo */
+
+'use strict';
+
+hexo.extend.generator.register('alias', require('./lib/generator'));
