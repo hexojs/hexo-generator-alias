@@ -9,6 +9,8 @@ describe('hexo-generator-alias', function() {
   var Page = hexo.model('Page');
   var generator = require('../lib/generator').bind(hexo);
 
+  before(() => hexo.init());
+
   beforeEach(function() {
     hexo.locals.invalidate();
   });
