@@ -1,6 +1,6 @@
 'use strict';
 
-var should = require('chai').should(); // eslint-disable-line
+require('chai').should(); // eslint-disable-line
 var Hexo = require('hexo');
 
 describe('hexo-generator-alias', function() {
@@ -8,6 +8,8 @@ describe('hexo-generator-alias', function() {
   var Post = hexo.model('Post');
   var Page = hexo.model('Page');
   var generator = require('../lib/generator').bind(hexo);
+
+  before(() => hexo.init());
 
   beforeEach(function() {
     hexo.locals.invalidate();
