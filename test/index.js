@@ -1,21 +1,21 @@
 'use strict';
 
-require('chai').should(); // eslint-disable-line
-var Hexo = require('hexo');
+const should = require('chai').should(); // eslint-disable-line
+const Hexo = require('hexo');
 
-describe('hexo-generator-alias', function() {
-  var hexo = new Hexo(__dirname);
-  var Post = hexo.model('Post');
-  var Page = hexo.model('Page');
-  var generator = require('../lib/generator').bind(hexo);
+describe('hexo-generator-alias', () => {
+  const hexo = new Hexo(__dirname);
+  const Post = hexo.model('Post');
+  const Page = hexo.model('Page');
+  const generator = require('../lib/generator').bind(hexo);
 
   before(() => hexo.init());
 
-  beforeEach(function() {
+  beforeEach(() => {
     hexo.locals.invalidate();
   });
 
-  it('posts', function() {
+  it('posts', () => {
     return Post.insert([
       // alias - string
       {
@@ -41,20 +41,20 @@ describe('hexo-generator-alias', function() {
         slug: 'boo',
         aliases: ['boo1', 'boo2', 'boo3']
       }
-    ]).then(function() {
-      var result = generator(hexo.locals.toObject());
+    ]).then(() => {
+      const result = generator(hexo.locals.toObject());
 
-      result.map(function(item) {
+      result.map(item => {
         return item.path;
       }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
-    }).finally(function() {
+    }).finally(() => {
       return Post.remove({});
     });
   });
 
   // it('posts.aliases - array');
 
-  it('pages', function() {
+  it('pages', () => {
     return Page.insert([
       // alias - string
       {
@@ -80,24 +80,24 @@ describe('hexo-generator-alias', function() {
         path: 'boo',
         aliases: ['boo1', 'boo2', 'boo3']
       }
-    ]).then(function() {
-      var result = generator(hexo.locals.toObject());
+    ]).then(() => {
+      const result = generator(hexo.locals.toObject());
 
-      result.map(function(item) {
+      result.map(item => {
         return item.path;
       }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
-    }).finally(function() {
+    }).finally(() => {
       return Page.remove({});
     });
   });
 
-  it('config.alias', function() {
+  it('config.alias', () => {
     hexo.config.alias = {
       'api/index.html': 'api/classes/Hexo.html',
       'plugins/index.html': 'https://github.com/tommy351/hexo/wiki/Plugins'
     };
 
-    var result = generator(hexo.locals.toObject());
+    const result = generator(hexo.locals.toObject());
 
     result[0].path.should.eql('api/index.html');
     result[0].data.should.include('api/classes/Hexo.html');
@@ -108,13 +108,13 @@ describe('hexo-generator-alias', function() {
     hexo.config.alias = null;
   });
 
-  it('config.aliases', function() {
+  it('config.aliases', () => {
     hexo.config.aliases = {
       'api/index.html': 'api/classes/Hexo.html',
       'plugins/index.html': 'https://github.com/tommy351/hexo/wiki/Plugins'
     };
 
-    var result = generator(hexo.locals.toObject());
+    const result = generator(hexo.locals.toObject());
 
     result[0].path.should.eql('api/index.html');
     result[0].data.should.include('/api/classes/Hexo.html');
@@ -125,13 +125,13 @@ describe('hexo-generator-alias', function() {
     hexo.config.alias = null;
   });
 
-  it('non-default root', function() {
+  it('non-default root', () => {
     hexo.config.root = '/test/';
     hexo.config.alias = {
       'api/index.html': 'api/classes/Hexo.html'
     };
 
-    var result = generator(hexo.locals.toObject());
+    const result = generator(hexo.locals.toObject());
 
     result[0].path.should.eql('api/index.html');
     result[0].data.should.include(hexo.config.root + 'api/classes/Hexo.html');
@@ -140,7 +140,7 @@ describe('hexo-generator-alias', function() {
     hexo.config.alias = null;
   });
 
-  it('external path', function() {
+  it('external path', () => {
     hexo.config.alias = {
       'http': 'http://hexo.io/',
       'https': 'https://hexo.io/',
@@ -148,7 +148,7 @@ describe('hexo-generator-alias', function() {
       'ftp': 'ftp://hexo.io/'
     };
 
-    var result = generator(hexo.locals.toObject());
+    const result = generator(hexo.locals.toObject());
 
     result[0].data.should.include('http://hexo.io/');
     result[1].data.should.include('https://hexo.io/');
@@ -158,12 +158,12 @@ describe('hexo-generator-alias', function() {
     hexo.config.alias = null;
   });
 
-  it('remove index.html suffix', function() {
+  it('remove index.html suffix', () => {
     hexo.config.alias = {
       'test': 'fooo/index.html'
     };
 
-    var result = generator(hexo.locals.toObject());
+    const result = generator(hexo.locals.toObject());
 
     result[0].data.should.include('fooo/');
     result[0].data.should.not.include('fooo/index.html');
