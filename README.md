@@ -10,6 +10,9 @@ Generates alias pages for redirecting to posts, pages or URL.
 $ npm install hexo-generator-alias --save
 ```
 
+Hexo 3 & 4: >= 1.0
+Hexo 2: 0.1.x
+
 ## Usage
 
 You can specify aliases in post files:
