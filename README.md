@@ -12,20 +12,32 @@ $ npm install hexo-generator-alias --save
 
 ## Usage
 
-You can specify aliases in post files:
-
-``` yaml
-alias: about/index.html
-
-alias:
-- about/index.html
-- bar/index.html
-```
-
-or in `_config.yml`:
+You can specify aliases in `_config.yml`:
 
 ``` yaml
 alias:
   api/index.html: api/classes/Hexo.html
   plugins/index.html: https://github.com/tommy351/hexo/wiki/Plugins
 ```
+
+In the above example, when you access http://yoursite.com/api/, you will be redirected to http://yoursite.com/api/classes/Hexo.html
+
+You could also configure it in your post and page files:
+
+``` diff
+source/cv/index.md
+---
+title: some title
+date: some date
++ alias: about/index.html
+
++ alias:
++ - foo/index.html
++ - bar/index.html
+---
+```
+
+In the above example, when you access http://yoursite.com/about/, you will be redirected to http://yoursite.com/cv/
+You could also configure multiple aliases. So in the second example,
+- http://yoursite.com/foo/ ⇒ http://yoursite.com/cv/
+- http://yoursite.com/bar/ ⇒ http://yoursite.com/cv/
