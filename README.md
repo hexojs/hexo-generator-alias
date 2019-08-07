@@ -12,8 +12,8 @@ Generates alias pages for redirecting to posts, pages or URL.
 $ npm install hexo-generator-alias --save
 ```
 
-Hexo 3 & 4: >= 1.0
-Hexo 2: 0.1.x
+- Hexo 3 & 4: >= 1.0
+- Hexo 2: 0.1.x
 
 ## Usage
 
@@ -43,6 +43,8 @@ date: some date
 ```
 
 In the above example, when you access http://yoursite.com/about/, you will be redirected to http://yoursite.com/cv/
+
 You could also configure multiple aliases. So in the second example,
+
 - http://yoursite.com/foo/ ⇒ http://yoursite.com/cv/
 - http://yoursite.com/bar/ ⇒ http://yoursite.com/cv/
