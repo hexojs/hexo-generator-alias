@@ -48,3 +48,29 @@ You could also configure multiple aliases. So in the second example,
 
 - http://yoursite.com/foo/ ⇒ http://yoursite.com/cv/
 - http://yoursite.com/bar/ ⇒ http://yoursite.com/cv/
+
+## Redirect
+
+Available in post and page.
+
+``` diff
+source/cv/index.md
+---
+title: some title
+date: some date
++ redirect: http://target-site.com/
+---
+```
+
+http://yoursite.com/cv/ ⇒ http://target-site.com/
+
+``` diff
+source/_posts/foo.md
+---
+title: foo
+date: 2020-01-02 00:00:00
++ redirect: /2020/03/04/bar/
+---
+```
+
+http://yoursite.com/2020/01/02/foo/ ⇒ http://yoursite.com/2020/03/04/bar/
