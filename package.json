@@ -1,6 +1,6 @@
 {
   "name": "hexo-generator-alias",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "Alias generator for Hexo",
   "main": "index.js",
   "directories": {
