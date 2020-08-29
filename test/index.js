@@ -10,11 +10,13 @@ describe('hexo-generator-alias', () => {
     const Post = hexo.model('Post');
     const Page = hexo.model('Page');
     const generator = require('../lib/generator').aliasGenerator.bind(hexo);
+    const defaultCfg = JSON.parse(JSON.stringify(hexo.config));
 
     before(() => hexo.init());
 
     beforeEach(() => {
       hexo.locals.invalidate();
+      hexo.config = JSON.parse(JSON.stringify(defaultCfg));
     });
 
     it('posts', () => {
@@ -106,8 +108,6 @@ describe('hexo-generator-alias', () => {
 
       result[1].path.should.eql('plugins/index.html');
       result[1].data.should.include('https://github.com/tommy351/hexo/wiki/Plugins');
-
-      hexo.config.alias = null;
     });
 
     it('config.aliases', () => {
@@ -123,23 +123,18 @@ describe('hexo-generator-alias', () => {
 
       result[1].path.should.eql('plugins/index.html');
       result[1].data.should.include('https://github.com/tommy351/hexo/wiki/Plugins');
-
-      hexo.config.alias = null;
     });
 
     it('non-default root', () => {
-      hexo.config.root = '/test/';
+      hexo.config.url = 'http://yoursite.com/root';
       hexo.config.alias = {
-        'api/index.html': 'api/classes/Hexo.html'
+        'lorem/index.html': 'lorem/classes/Hexo.html'
       };
 
       const result = generator(hexo.locals.toObject());
 
-      result[0].path.should.eql('api/index.html');
-      result[0].data.should.include(hexo.config.root + 'api/classes/Hexo.html');
-
-      hexo.config.root = '/';
-      hexo.config.alias = null;
+      result[0].path.should.eql('lorem/index.html');
+      result[0].data.should.include(hexo.config.url + '/lorem/classes/Hexo.html');
     });
 
     it('external path', () => {
@@ -156,21 +151,29 @@ describe('hexo-generator-alias', () => {
       result[1].data.should.include('https://hexo.io/');
       result[2].data.should.include('//hexo.io/');
       result[3].data.should.include('ftp://hexo.io/');
-
-      hexo.config.alias = null;
     });
 
-    it('remove index.html suffix', () => {
+    it('pretty_urls - true', () => {
+      hexo.config.pretty_urls.trailing_index = true;
       hexo.config.alias = {
-        'test': 'fooo/index.html'
+        'test': 'foo/index.html'
       };
 
       const result = generator(hexo.locals.toObject());
 
-      result[0].data.should.include('fooo/');
-      result[0].data.should.not.include('fooo/index.html');
+      result[0].data.should.include('foo/index.html');
+    });
 
-      hexo.config.alias = null;
+    it('pretty_urls - false', () => {
+      hexo.config.pretty_urls.trailing_index = false;
+      hexo.config.alias = {
+        'test': 'bar/index.html'
+      };
+
+      const result = generator(hexo.locals.toObject());
+
+      result[0].data.should.include('bar/');
+      result[0].data.should.not.include('bar/index.html');
     });
   });
 
