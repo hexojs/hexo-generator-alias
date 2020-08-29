@@ -9,7 +9,7 @@ describe('hexo-generator-alias', () => {
     const hexo = new Hexo(__dirname);
     const Post = hexo.model('Post');
     const Page = hexo.model('Page');
-    const generator = require('../lib/generator').bind(hexo);
+    const generator = require('../lib/generator').aliasGenerator.bind(hexo);
 
     before(() => hexo.init());
 
@@ -178,7 +178,7 @@ describe('hexo-generator-alias', () => {
     const hexo = new Hexo(__dirname, { silent: true });
     const Post = hexo.model('Post');
     const Page = hexo.model('Page');
-    const r = require('../lib/redirect').bind(hexo);
+    const r = require('../lib/generator').redirGenerator.bind(hexo);
 
     before(() => hexo.init());
 
