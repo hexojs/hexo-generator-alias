@@ -1,6 +1,6 @@
 'use strict';
 
-const should = require('chai').should(); // eslint-disable-line
+require('chai').should();
 const Hexo = require('hexo');
 const { full_url_for } = require('hexo-util');
 
@@ -19,80 +19,82 @@ describe('hexo-generator-alias', () => {
       hexo.config = JSON.parse(JSON.stringify(defaultCfg));
     });
 
-    it('posts', () => {
-      return Post.insert([
-        // alias - string
-        {
-          source: 'foo',
-          slug: 'foo',
-          alias: 'foo1'
-        },
-        // alias - array
-        {
-          source: 'bar',
-          slug: 'bar',
-          alias: ['bar1', 'bar2', 'bar3']
-        },
-        // aliases - string
-        {
-          source: 'baz',
-          slug: 'baz',
-          aliases: 'baz1'
-        },
-        // aliases - array
-        {
-          source: 'boo',
-          slug: 'boo',
-          aliases: ['boo1', 'boo2', 'boo3']
-        }
-      ]).then(() => {
+    it('posts', async () => {
+      try {
+        await Post.insert([
+          // alias - string
+          {
+            source: 'foo',
+            slug: 'foo',
+            alias: 'foo1'
+          },
+          // alias - array
+          {
+            source: 'bar',
+            slug: 'bar',
+            alias: ['bar1', 'bar2', 'bar3']
+          },
+          // aliases - string
+          {
+            source: 'baz',
+            slug: 'baz',
+            aliases: 'baz1'
+          },
+          // aliases - array
+          {
+            source: 'boo',
+            slug: 'boo',
+            aliases: ['boo1', 'boo2', 'boo3']
+          }
+        ]);
+
         const result = generator(hexo.locals.toObject());
 
         result.map(item => {
           return item.path;
         }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
-      }).finally(() => {
-        return Post.remove({});
-      });
+      } finally {
+        await Post.remove({});
+      }
     });
 
-    // it('posts.aliases - array');
+    it('pages', async () => {
+      try {
+        await Page.insert([
+          // alias - string
+          {
+            source: 'foo',
+            path: 'foo',
+            alias: 'foo1'
+          },
+          // alias - array
+          {
+            source: 'bar',
+            path: 'bar',
+            alias: ['bar1', 'bar2', 'bar3']
+          },
+          // aliases - string
+          {
+            source: 'baz',
+            path: 'baz',
+            aliases: 'baz1'
+          },
+          // aliases - array
+          {
+            source: 'boo',
+            path: 'boo',
+            aliases: ['boo1', 'boo2', 'boo3']
+          }
+        ]);
 
-    it('pages', () => {
-      return Page.insert([
-        // alias - string
-        {
-          source: 'foo',
-          path: 'foo',
-          alias: 'foo1'
-        },
-        // alias - array
-        {
-          source: 'bar',
-          path: 'bar',
-          alias: ['bar1', 'bar2', 'bar3']
-        },
-        // aliases - string
-        {
-          source: 'baz',
-          path: 'baz',
-          aliases: 'baz1'
-        },
-        // aliases - array
-        {
-          source: 'boo',
-          path: 'boo',
-          aliases: ['boo1', 'boo2', 'boo3']
-        }
-      ]).then(() => {
         const result = generator(hexo.locals.toObject());
 
         result.map(item => {
           return item.path;
         }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
-      }).finally(() => {
-        return Page.remove({});
-      });
+      } finally {
+        await Page.remove({});
+      }
     });
 
     it('config.alias', () => {
@@ -185,6 +187,11 @@ describe('hexo-generator-alias', () => {
 
     before(() => hexo.init());
 
+    afterEach(async () => {
+      await Post.remove({});
+      await Page.remove({});
+    });
+
     it('post', async () => {
       const target = 'http://bar.com';
       const post = await Post.insert({
@@ -195,8 +202,6 @@ describe('hexo-generator-alias', () => {
 
       const result = r(post);
       result.content.should.include('<meta http-equiv="refresh" content="0; url=' + target + '">');
-
-      await Post.removeById(post._id);
     });
 
     it('page', async () => {
@@ -209,8 +214,6 @@ describe('hexo-generator-alias', () => {
 
       const result = r(page);
       result.content.should.include('<meta http-equiv="refresh" content="0; url=' + target + '">');
-
-      await Page.removeById(page._id);
     });
 
     it('should output absolute url', async () => {
@@ -223,8 +226,6 @@ describe('hexo-generator-alias', () => {
 
       const result = r(post);
       result.content.should.include('<meta http-equiv="refresh" content="0; url=' + full_url_for.call(hexo, target) + '">');
-
-      await Post.removeById(post._id);
     });
 
     it('prioritize alias', async () => {
@@ -240,8 +241,6 @@ describe('hexo-generator-alias', () => {
 
       const result = r(post);
       result.content.should.eql(content);
-
-      await Post.removeById(post._id);
     });
 
     it('prioritize aliases', async () => {
@@ -257,8 +256,6 @@ describe('hexo-generator-alias', () => {
 
       const result = r(post);
       result.content.should.eql(content);
-
-      await Post.removeById(post._id);
     });
   });
 });
