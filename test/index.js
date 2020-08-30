@@ -257,5 +257,23 @@ describe('hexo-generator-alias', () => {
       const result = r(post);
       result.content.should.eql(content);
     });
+
+    it('slug', async () => {
+      hexo.config.permalink = 'ibnay/herut/:title/';
+      const filename = 'foo-bar';
+      await Post.insert({
+        source: 'foo-bar',
+        slug: filename,
+        content: 'lorem'
+      });
+      const post = await Post.insert({
+        source: 'foo',
+        slug: 'foo',
+        redirect: filename
+      });
+
+      const result = r(post);
+      result.content.should.include(full_url_for.call(hexo, 'ibnay/herut/' + filename + '/'));
+    });
   });
 });
