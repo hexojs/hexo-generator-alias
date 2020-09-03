@@ -25,7 +25,7 @@ alias:
   plugins/index.html: https://github.com/tommy351/hexo/wiki/Plugins
 ```
 
-In the above example, when you access http://yoursite.com/api/, you will be redirected to http://yoursite.com/api/classes/Hexo.html
+In the above example, when you access http://example.com/api/, you will be redirected to http://example.com/api/classes/Hexo.html
 
 You could also configure it in your post and page files:
 
@@ -42,12 +42,12 @@ date: some date
 ---
 ```
 
-In the above example, when you access http://yoursite.com/about/, you will be redirected to http://yoursite.com/cv/
+In the above example, when you access http://example.com/about/, you will be redirected to http://example.com/cv/
 
 You could also configure multiple aliases. So in the second example,
 
-- http://yoursite.com/foo/ ⇒ http://yoursite.com/cv/
-- http://yoursite.com/bar/ ⇒ http://yoursite.com/cv/
+- http://example.com/foo/ ⇒ http://example.com/cv/
+- http://example.com/bar/ ⇒ http://example.com/cv/
 
 ## Redirect
 
@@ -62,7 +62,7 @@ date: some date
 ---
 ```
 
-http://yoursite.com/cv/ ⇒ http://target-site.com/
+http://example.com/cv/ ⇒ http://target-site.com/
 
 ``` diff
 source/_posts/foo.md
@@ -73,4 +73,22 @@ date: 2020-01-02 00:00:00
 ---
 ```
 
-http://yoursite.com/2020/01/02/foo/ ⇒ http://yoursite.com/2020/03/04/bar/
+http://example.com/2020/01/02/foo/ ⇒ http://example.com/2020/03/04/bar/
+
+### Redirect to a post
+
+If you specify a value without any slash, the article will be redirected to a post with that filename.
+
+For example, there is an existing post "source/_posts/foo-post.md" that is available at http://example.com/2020/01/02/foo-post/,
+
+``` diff
+source/baz-page.md
+---
+title: baz
++ redirect: foo-post
+---
+```
+
+http://example.com/baz-page ⇒ http://example.com/2020/01/02/foo-post/
+
+_If a post could not be located (due to incorrect value), the article will be redirected to http://example.com/foo-post_
