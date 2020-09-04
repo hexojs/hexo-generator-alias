@@ -49,6 +49,11 @@ You could also configure multiple aliases. So in the second example,
 - http://example.com/foo/ ⇒ http://example.com/cv/
 - http://example.com/bar/ ⇒ http://example.com/cv/
 
+Alias must ends with `.html`, examples of valid value include:
+
+- "about/index.html" (alias is http://example.com/about/)
+- "foo/bar.html" (alias is http://example.com/foo/bar)
+
 ## Redirect
 
 Available in post and page.
