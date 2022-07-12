@@ -1,279 +1,171 @@
 'use strict';
 
-require('chai').should();
-const Hexo = require('hexo');
-const { full_url_for } = require('hexo-util');
+var should = require('chai').should(); // eslint-disable-line
+var Hexo = require('hexo');
 
-describe('hexo-generator-alias', () => {
-  describe('alias', () => {
-    const hexo = new Hexo(__dirname);
-    const Post = hexo.model('Post');
-    const Page = hexo.model('Page');
-    const generator = require('../lib/generator').aliasGenerator.bind(hexo);
-    const defaultCfg = JSON.parse(JSON.stringify(hexo.config));
+describe('hexo-generator-alias', function() {
+  var hexo = new Hexo(__dirname);
+  var Post = hexo.model('Post');
+  var Page = hexo.model('Page');
+  var generator = require('../lib/generator').bind(hexo);
 
-    before(() => hexo.init());
+  beforeEach(function() {
+    hexo.locals.invalidate();
+  });
 
-    beforeEach(() => {
-      hexo.locals.invalidate();
-      hexo.config = JSON.parse(JSON.stringify(defaultCfg));
-    });
-
-    it('posts', async () => {
-      try {
-        await Post.insert([
-          // alias - string
-          {
-            source: 'foo',
-            slug: 'foo',
-            alias: 'foo1'
-          },
-          // alias - array
-          {
-            source: 'bar',
-            slug: 'bar',
-            alias: ['bar1', 'bar2', 'bar3']
-          },
-          // aliases - string
-          {
-            source: 'baz',
-            slug: 'baz',
-            aliases: 'baz1'
-          },
-          // aliases - array
-          {
-            source: 'boo',
-            slug: 'boo',
-            aliases: ['boo1', 'boo2', 'boo3']
-          }
-        ]);
-
-        const result = generator(hexo.locals.toObject());
-
-        result.map(item => {
-          return item.path;
-        }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
-      } finally {
-        await Post.remove({});
+  it('posts', function() {
+    return Post.insert([
+      // alias - string
+      {
+        source: 'foo',
+        slug: 'foo',
+        alias: 'foo1'
+      },
+      // alias - array
+      {
+        source: 'bar',
+        slug: 'bar',
+        alias: ['bar1', 'bar2', 'bar3']
+      },
+      // aliases - string
+      {
+        source: 'baz',
+        slug: 'baz',
+        aliases: 'baz1'
+      },
+      // aliases - array
+      {
+        source: 'boo',
+        slug: 'boo',
+        aliases: ['boo1', 'boo2', 'boo3']
       }
-    });
+    ]).then(function() {
+      var result = generator(hexo.locals.toObject());
 
-    it('pages', async () => {
-      try {
-        await Page.insert([
-          // alias - string
-          {
-            source: 'foo',
-            path: 'foo',
-            alias: 'foo1'
-          },
-          // alias - array
-          {
-            source: 'bar',
-            path: 'bar',
-            alias: ['bar1', 'bar2', 'bar3']
-          },
-          // aliases - string
-          {
-            source: 'baz',
-            path: 'baz',
-            aliases: 'baz1'
-          },
-          // aliases - array
-          {
-            source: 'boo',
-            path: 'boo',
-            aliases: ['boo1', 'boo2', 'boo3']
-          }
-        ]);
-
-        const result = generator(hexo.locals.toObject());
-
-        result.map(item => {
-          return item.path;
-        }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
-      } finally {
-        await Page.remove({});
-      }
-    });
-
-    it('config.alias', () => {
-      hexo.config.alias = {
-        'api/index.html': 'api/classes/Hexo.html',
-        'plugins/index.html': 'https://github.com/tommy351/hexo/wiki/Plugins'
-      };
-
-      const result = generator(hexo.locals.toObject());
-
-      result[0].path.should.eql('api/index.html');
-      result[0].data.should.include('api/classes/Hexo.html');
-
-      result[1].path.should.eql('plugins/index.html');
-      result[1].data.should.include('https://github.com/tommy351/hexo/wiki/Plugins');
-    });
-
-    it('config.aliases', () => {
-      hexo.config.aliases = {
-        'api/index.html': 'api/classes/Hexo.html',
-        'plugins/index.html': 'https://github.com/tommy351/hexo/wiki/Plugins'
-      };
-
-      const result = generator(hexo.locals.toObject());
-
-      result[0].path.should.eql('api/index.html');
-      result[0].data.should.include('/api/classes/Hexo.html');
-
-      result[1].path.should.eql('plugins/index.html');
-      result[1].data.should.include('https://github.com/tommy351/hexo/wiki/Plugins');
-    });
-
-    it('non-default root', () => {
-      hexo.config.url = 'http://yoursite.com/root';
-      hexo.config.alias = {
-        'lorem/index.html': 'lorem/classes/Hexo.html'
-      };
-
-      const result = generator(hexo.locals.toObject());
-
-      result[0].path.should.eql('lorem/index.html');
-      result[0].data.should.include(hexo.config.url + '/lorem/classes/Hexo.html');
-    });
-
-    it('external path', () => {
-      hexo.config.alias = {
-        'http': 'http://hexo.io/',
-        'https': 'https://hexo.io/',
-        'relative': '//hexo.io/',
-        'ftp': 'ftp://hexo.io/'
-      };
-
-      const result = generator(hexo.locals.toObject());
-
-      result[0].data.should.include('http://hexo.io/');
-      result[1].data.should.include('https://hexo.io/');
-      result[2].data.should.include('//hexo.io/');
-      result[3].data.should.include('ftp://hexo.io/');
-    });
-
-    it('pretty_urls - true', () => {
-      hexo.config.pretty_urls.trailing_index = true;
-      hexo.config.alias = {
-        'test': 'foo/index.html'
-      };
-
-      const result = generator(hexo.locals.toObject());
-
-      result[0].data.should.include('foo/index.html');
-    });
-
-    it('pretty_urls - false', () => {
-      hexo.config.pretty_urls.trailing_index = false;
-      hexo.config.alias = {
-        'test': 'bar/index.html'
-      };
-
-      const result = generator(hexo.locals.toObject());
-
-      result[0].data.should.include('bar/');
-      result[0].data.should.not.include('bar/index.html');
+      result.map(function(item) {
+        return item.path;
+      }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
+    }).finally(function() {
+      return Post.remove({});
     });
   });
 
-  describe('redirect', () => {
-    const hexo = new Hexo(__dirname, { silent: true });
-    const Post = hexo.model('Post');
-    const Page = hexo.model('Page');
-    const r = require('../lib/generator').redirGenerator.bind(hexo);
+  // it('posts.aliases - array');
 
-    before(() => hexo.init());
-
-    afterEach(async () => {
-      await Post.remove({});
-      await Page.remove({});
-    });
-
-    it('post', async () => {
-      const target = 'http://bar.com';
-      const post = await Post.insert({
-        source: 'foo',
-        slug: 'foo',
-        redirect: target
-      });
-
-      const result = r(post);
-      result.content.should.include('<meta http-equiv="refresh" content="0; url=' + target + '">');
-    });
-
-    it('page', async () => {
-      const target = 'http://bar.com';
-      const page = await Page.insert({
+  it('pages', function() {
+    return Page.insert([
+      // alias - string
+      {
         source: 'foo',
         path: 'foo',
-        redirect: target
-      });
+        alias: 'foo1'
+      },
+      // alias - array
+      {
+        source: 'bar',
+        path: 'bar',
+        alias: ['bar1', 'bar2', 'bar3']
+      },
+      // aliases - string
+      {
+        source: 'baz',
+        path: 'baz',
+        aliases: 'baz1'
+      },
+      // aliases - array
+      {
+        source: 'boo',
+        path: 'boo',
+        aliases: ['boo1', 'boo2', 'boo3']
+      }
+    ]).then(function() {
+      var result = generator(hexo.locals.toObject());
 
-      const result = r(page);
-      result.content.should.include('<meta http-equiv="refresh" content="0; url=' + target + '">');
+      result.map(function(item) {
+        return item.path;
+      }).should.have.members(['foo1', 'bar1', 'bar2', 'bar3', 'baz1', 'boo1', 'boo2', 'boo3']);
+    }).finally(function() {
+      return Page.remove({});
     });
+  });
 
-    it('should output absolute url', async () => {
-      const target = '/bar/';
-      const post = await Post.insert({
-        source: 'foo',
-        slug: 'foo',
-        redirect: target
-      });
+  it('config.alias', function() {
+    hexo.config.alias = {
+      'api/index.html': 'api/classes/Hexo.html',
+      'plugins/index.html': 'https://github.com/tommy351/hexo/wiki/Plugins'
+    };
 
-      const result = r(post);
-      result.content.should.include('<meta http-equiv="refresh" content="0; url=' + full_url_for.call(hexo, target) + '">');
-    });
+    var result = generator(hexo.locals.toObject());
 
-    it('prioritize alias', async () => {
-      const target = 'http://bar.com';
-      const content = 'lorem';
-      const post = await Post.insert({
-        source: 'foo',
-        slug: 'foo',
-        content,
-        alias: 'foo1',
-        redirect: target
-      });
+    result[0].path.should.eql('api/index.html');
+    result[0].data.should.include('api/classes/Hexo.html');
 
-      const result = r(post);
-      result.content.should.eql(content);
-    });
+    result[1].path.should.eql('plugins/index.html');
+    result[1].data.should.include('https://github.com/tommy351/hexo/wiki/Plugins');
 
-    it('prioritize aliases', async () => {
-      const target = 'http://bar.com';
-      const content = 'lorem';
-      const post = await Post.insert({
-        source: 'foo',
-        slug: 'foo',
-        content,
-        aliases: ['foo1'],
-        redirect: target
-      });
+    hexo.config.alias = null;
+  });
 
-      const result = r(post);
-      result.content.should.eql(content);
-    });
+  it('config.aliases', function() {
+    hexo.config.aliases = {
+      'api/index.html': 'api/classes/Hexo.html',
+      'plugins/index.html': 'https://github.com/tommy351/hexo/wiki/Plugins'
+    };
 
-    it('slug', async () => {
-      hexo.config.permalink = 'ibnay/herut/:title/';
-      const filename = 'foo-bar';
-      await Post.insert({
-        source: 'foo-bar',
-        slug: filename,
-        content: 'lorem'
-      });
-      const post = await Post.insert({
-        source: 'foo',
-        slug: 'foo',
-        redirect: filename
-      });
+    var result = generator(hexo.locals.toObject());
 
-      const result = r(post);
-      result.content.should.include(full_url_for.call(hexo, 'ibnay/herut/' + filename + '/'));
-    });
+    result[0].path.should.eql('api/index.html');
+    result[0].data.should.include('/api/classes/Hexo.html');
+
+    result[1].path.should.eql('plugins/index.html');
+    result[1].data.should.include('https://github.com/tommy351/hexo/wiki/Plugins');
+
+    hexo.config.alias = null;
+  });
+
+  it('non-default root', function() {
+    hexo.config.root = '/test/';
+    hexo.config.alias = {
+      'api/index.html': 'api/classes/Hexo.html'
+    };
+
+    var result = generator(hexo.locals.toObject());
+
+    result[0].path.should.eql('api/index.html');
+    result[0].data.should.include(hexo.config.root + 'api/classes/Hexo.html');
+
+    hexo.config.root = '/';
+    hexo.config.alias = null;
+  });
+
+  it('external path', function() {
+    hexo.config.alias = {
+      'http': 'http://hexo.io/',
+      'https': 'https://hexo.io/',
+      'relative': '//hexo.io/',
+      'ftp': 'ftp://hexo.io/'
+    };
+
+    var result = generator(hexo.locals.toObject());
+
+    result[0].data.should.include('http://hexo.io/');
+    result[1].data.should.include('https://hexo.io/');
+    result[2].data.should.include('//hexo.io/');
+    result[3].data.should.include('ftp://hexo.io/');
+
+    hexo.config.alias = null;
+  });
+
+  it('remove index.html suffix', function() {
+    hexo.config.alias = {
+      'test': 'fooo/index.html'
+    };
+
+    var result = generator(hexo.locals.toObject());
+
+    result[0].data.should.include('fooo/');
+    result[0].data.should.not.include('fooo/index.html');
+
+    hexo.config.alias = null;
   });
 });
