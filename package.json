@@ -1,6 +1,10 @@
 {
   "name": "hexo-generator-alias",
+<<<<<<< HEAD
   "version": "1.0.0",
+=======
+  "version": "0.1.2",
+>>>>>>> parent of 6d96684 (Bump version)
   "description": "Alias generator for Hexo",
   "main": "index.js",
   "directories": {
