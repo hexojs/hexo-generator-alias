@@ -25,7 +25,7 @@
   "author": "Tommy Chen <tommy351@gmail.com> (http://zespia.tw)",
   "license": "MIT",
   "dependencies": {
-    "hexo-util": "^2.4.0"
+    "hexo-util": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
