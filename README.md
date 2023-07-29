@@ -1,6 +1,6 @@
 # hexo-generator-alias
 
-[![Build Status](https://travis-ci.org/hexojs/hexo-generator-alias.svg?branch=master)](https://travis-ci.org/hexojs/hexo-generator-alias)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/hexojs/hexo-generator-alias/tester.yml?branch=master&label=test)](https://github.com/hexojs/hexo-generator-alias/actions?query=workflow%3ATester)
 [![NPM version](https://badge.fury.io/js/hexo-generator-alias.svg)](https://www.npmjs.com/package/hexo-generator-alias)
 [![Coverage Status](https://img.shields.io/coveralls/hexojs/hexo-generator-alias.svg)](https://coveralls.io/r/hexojs/hexo-generator-alias?branch=master)
 
