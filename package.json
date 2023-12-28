@@ -28,7 +28,7 @@
     "hexo-util": "^3.0.1"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "chai": "^5.0.0",
     "eslint": "^8.30.0",
     "eslint-config-hexo": "^4.1.0",
     "hexo": "^7.0.0",
