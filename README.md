@@ -97,3 +97,12 @@ title: baz
 http://example.com/baz-page ⇒ http://example.com/2020/01/02/foo-post/
 
 _If a post could not be located (due to incorrect value), the article will be redirected to http://example.com/foo-post_
+
+## Options
+
+```yaml
+alias_generator:
+  relative_url: false
+```
+
+- **relative_url**: Use relative url as redirect target.
